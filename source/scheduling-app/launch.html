@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang='en' hidden>
+  <head>
+    <meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+    <meta http-equiv='X-UA-Compatible' content='IE=edge' />
+    <title>Scheduling App</title>
+
+    <!-- Bootstrap css -->
+    <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css' integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T' crossorigin='anonymous'>
+
+    <!-- Application-level css -->
+    <link rel='stylesheet' type='text/css' href='./src/css/scheduling-app.css'>
+
+    <link rel='stylesheet' type='text/css' href='./lib/css/cerner-smart-embeddable-lib-1.0.0.min.css'>
+  </head>
+  <body>
+    <!-- Required JS files to enable this page to embed within an MPage -->
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.26.0/polyfill.min.js'></script>
+    <script src='./lib/js/cerner-smart-embeddable-lib-1.0.0.min.js'></script>
+
+    <!-- FHIR Client JS Library -->
+    <script src='./lib/js/fhir-client-v0.1.12.js'></script>
+
+    <!-- Prevent session bleed caused by single threaded embedded browser and sessionStorage API -->
+    <!-- https://github.com/cerner/fhir-client-cerner-additions -->
+    <script src='./lib/js/fhir-client-cerner-additions-1.0.0.js'></script>
+    <script>
+      FHIR.oauth2.authorize({
+        'client_id': '[CLIENT ID]',
+        'scope': 'user/Appointment.write user/Patient.read user/Patient.write user/Slot.read launch online_access openid profile'
+      });
+    </script>
+
+    <div class='spinner'>
+      <div class='bounce1'></div>
+      <div class='bounce2'></div>
+      <div class='bounce3'></div>
+    </div>
+  </body>
+</html>

@@ -46,11 +46,11 @@ configure :build do
   # rewrite_ignore does not work as it conflicts weirdly with relative_assets. Disabling
   # the .woff2 extension only does not work as .woff will still activate it so have to
   # have both. See https://github.com/slatedocs/slate/issues/1171 for more details.
-  activate :asset_hash, :exts => app.config[:asset_extensions] - %w[.woff .woff2]
+  # activate :asset_hash, :exts => app.config[:asset_extensions] - %w[.woff .woff2]
   # If you're having trouble with Middleman hanging, commenting
   # out the following two lines has been known to help
-  activate :minify_css
-  activate :minify_javascript
+  # activate :minify_css
+  # activate :minify_javascript
   # activate :gzip
 end
 
