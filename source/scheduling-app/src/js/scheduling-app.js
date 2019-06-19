@@ -67,8 +67,8 @@ function slotHTML(id, type, start, end) {
              "<h5 class='card-title'>" + type + '</h5>' +
              "<p class='card-text'>Start: " + prettyStart + '</p>' +
              "<p class='card-text'>End: " + prettyEnd + '</p>' +
-             "<a href='javascript:void(0);' class='card-link' onclick='appointmentCreate(\"" +
-               slotReference + "\", \"Patient/4704007\");'>Book</a>" +
+             "<a href='javascript:void(0);' class='card-link' onclick='askForPatient(\"" +
+               slotReference + '", "' + type + '", "' + prettyStart + '", "' + prettyEnd + "\");'>Book</a>" +
            '</div>' +
          '</div>';
 }
@@ -88,6 +88,7 @@ function clearUI() {
   $('#appointment').html('');
   $('#appointment-holder-row').hide();
   $('#patient-search-create-row').hide();
+  clearPatientUI();
 }
 
 $('#clear-appointment').on('click', function(e) {
@@ -144,4 +145,176 @@ function renderAppointment(appointmentLocation) {
   clearUI();
   $('#appointment').html('<p>Created Appointment ' + appointmentLocation.match(/\d+$/)[0] + '</p>');
   $('#appointment-holder-row').show();
+}
+
+$('#patient-search-form').on('submit', function(e) {
+  e.preventDefault();
+  patientSearch();
+});
+
+$('#patient-create-form').on('submit', function(e) {
+  e.preventDefault();
+  patientCreate();
+});
+
+$('#clear-patients').on('click', function(e) {
+  $('#patients').html('');
+  $('#patients-holder-row').hide();
+});
+
+function askForPatient(slotReference, type, start, end) {
+  clearUI();
+  $('#patient-search-create-row').show();
+
+  $('#patient-search-create-info').html(
+    '<p>To book Appointment [' + type + '] on ' + new Date(start).toLocaleDateString() +
+    ' at ' + new Date(start).toLocaleTimeString() + ' - ' + new Date(end).toLocaleTimeString() +
+    ', select a Patient.</p>'
+  );
+  sessionStorage.setItem('slotReference', slotReference);
+}
+
+function patientSearch() {
+  clearPatientUI();
+  $('#patient-loading-row').show();
+
+  var form = document.getElementById('patient-search-form');
+  var patientParams = {name: form.elements[0].value};
+
+  FHIR.oauth2.ready(function(smart) {
+    smart.api.fetchAll({type: 'Patient', query: patientParams}).then(
+
+      // Display Patient information if the call succeeded
+      function(patients) {
+        // If any Patients matched the criteria, display them
+        if (patients.length) {
+          var patientsHTML = '',
+              slotReference = sessionStorage.getItem('slotReference');
+
+          patients.forEach(function(patient) {
+            var patientName = patient.name[0].given.join(' ') + ' ' + patient.name[0].family;
+            patientsHTML = patientsHTML + patientHTML(slotReference, patient.id, patientName);
+          });
+
+          form.reset();
+          renderPatients(patientsHTML);
+        }
+        // If no Patients matched the criteria, inform the user
+        else {
+          renderPatients('<p>No Patients found for the selected query parameters.</p>');
+        }
+      },
+
+      // Display 'Failed to read Patients from FHIR server' if the call failed
+      function() {
+        clearPatientUI();
+        $('#patient-errors').html('<p>Failed to read Patients from FHIR server</p>');
+        $('#patient-errors-row').show();
+      }
+    );
+  });
+}
+
+function patientHTML(slotReference, patientId, patientName) {
+  console.log('Patient: name:[' + patientName + ']');
+
+  var patientReference = 'Patient/' + patientId;
+
+  return "<div class='card'>" +
+           "<div class='card-body'>" +
+             "<h5 class='card-title'>" + patientName + '</h5>' +
+             "<a href='javascript:void(0);' class='card-link' onclick='appointmentCreate(\"" +
+               slotReference + '", "' + patientReference + "\");'>Use Patient</a>" +
+           '</div>' +
+         '</div>';
+}
+
+function patientCreate() {
+  clearPatientUI();
+  $('#patient-loading-row').show();
+
+  // Grab Patient POST body attributes from the patient-create-form
+  var form = document.getElementById('patient-create-form');
+
+  var patientBody = patientJSON(
+    form.elements['patient-create-firstname'].value,
+    form.elements['patient-create-middlename'].value,
+    form.elements['patient-create-lastname'].value,
+    form.elements['patient-create-phone'].value,
+    form.elements['patient-create-male'].checked ? 'male' : 'female',
+    form.elements['patient-create-birthdate'].value
+  );
+
+  // FHIR.oauth2.ready handles refreshing access tokens
+  FHIR.oauth2.ready(function(smart) {
+    smart.api.create({resource: patientBody}).then(
+
+      // Display Patient information if the call succeeded
+      function(patient) {
+        $('#patient-loading-row').hide();
+        form.reset();
+        alert('Created Patient ' + patient.headers('Location').match(/\d+$/)[0] + '\n\nSearch for them by name.');
+      },
+
+      // Display 'Failed to write Patient to FHIR server' if the call failed
+      function() {
+        $('#patient-loading-row').hide();
+        alert('Failed to write Patient to FHIR server');
+      }
+    );
+  });
+}
+
+function patientJSON(firstName, middleName, lastName, phone, gender, birthDate) {
+  var periodStart = new Date().toISOString();
+
+  return {
+    resourceType: 'Patient',
+    identifier: [
+      {
+        assigner: {
+          reference: 'Organization/619848'
+        }
+      }
+    ],
+    active: true,
+    name: [
+      {
+        use: 'official',
+        family: [
+          lastName
+        ],
+        given: [
+          firstName,
+          middleName
+        ],
+        period: {
+          start: periodStart
+        }
+      }
+    ],
+    telecom: [
+      {
+        system: 'phone',
+        value: phone,
+        use: 'home'
+      }
+    ],
+    gender: gender,
+    birthDate: birthDate
+  };
+}
+
+function renderPatients(patientsHTML) {
+  clearPatientUI();
+  $('#patients').html(patientsHTML);
+  $('#patients-holder-row').show();
+}
+
+function clearPatientUI() {
+  $('#patient-errors').html('');
+  $('#patient-errors-row').hide();
+  $('#patient-loading-row').hide();
+  $('#patients').html('');
+  $('#patients-holder-row').hide();
 }

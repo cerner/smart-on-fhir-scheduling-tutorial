@@ -137,6 +137,149 @@
         </div>
       </div>
 
+      <div id='patient-search-create-row' class='row mt-5'>
+        <div class='col'>
+          <div class='row'>
+            <div class='col'>
+              <div id='patient-search-create-info'></div>
+            </div>
+          </div>
+          
+          <div class='row'>
+            <div class='col'>
+              <div class='accordion' id='patient-search-create-accordion'>
+                <div class='card'>
+                  <div class='card-header' id='headingOne'>
+                    <h5 class='mb-0'>
+                      <button class='btn btn-link' type='button' data-toggle='collapse' data-target='#collapseOne' aria-expanded='true' aria-controls='collapseOne'>
+                        Search for existing Patient
+                      </button>
+                    </h5>
+                  </div>
+                  <div id='collapseOne' class='collapse show' aria-labelledby='headingOne' data-parent='#patient-search-create-accordion'>
+                    <div class='card-body'>
+                      <form id='patient-search-form'>
+                        <div class='form-group row'>
+                          <label for='patient-search-name' class='col-sm-2 col-form-label'>Name</label>
+                          <div class='col-sm-10'>
+                            <input type='text' class='form-control' id='patient-search-name' placeholder='Name' required>
+                          </div>
+                        </div>
+                        <button class='btn btn-primary' id='patient-search'>Search for Patients</button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+
+                <div class='card'>
+                  <div class='card-header' id='headingTwo'>
+                    <h5 class='mb-0'>
+                      <button class='btn btn-link collapsed' type='button' data-toggle='collapse' data-target='#collapseTwo' aria-expanded='false' aria-controls='collapseTwo'>
+                        Create new Patient
+                      </button>
+                    </h5>
+                  </div>
+                  <div id='collapseTwo' class='collapse' aria-labelledby='headingTwo' data-parent='#patient-search-create-accordion'>
+                    <div class='card-body'>
+                      <form id='patient-create-form'>
+                        <div class='form-group row'>
+                          <label for='patient-create-firstname' class='col-sm-2 col-form-label'>First Name</label>
+                          <div class='col-sm-10'>
+                            <input class='form-control' type='text' name='patient-create-firstname' placeholder='First name' required>
+                          </div>
+                        </div>
+                        <div class='form-group row'>
+                          <label for='patient-create-middlename' class='col-sm-2 col-form-label'>Middle Name</label>
+                          <div class='col-sm-10'>
+                            <input class='form-control' type='text' name='patient-create-middlename' placeholder='Middle name' required>
+                          </div>
+                        </div>
+                        <div class='form-group row'>
+                          <label for='patient-create-lastname' class='col-sm-2 col-form-label'>Last Name</label>
+                          <div class='col-sm-10'>
+                            <input class='form-control' type='text' name='patient-create-lastname' placeholder='Last name' required>
+                          </div>
+                        </div>
+                        <div class='form-group row'>
+                          <label for='patient-create-phone' class='col-sm-2 col-form-label'>Phone Number</label>
+                          <div class='col-sm-10'>
+                            <input class='form-control' type='tel' name='patient-create-phone' placeholder='555-555-5555' pattern='[0-9]{3}-[0-9]{3}-[0-9]{4}' required>
+                          </div>
+                        </div>
+                        <fieldset class='form-group'>
+                          <div class='row'>
+                            <legend class='col-form-label col-sm-2 pt-0'>Gender</legend>
+                            <div class='col-sm-10'>
+                              <div class='form-check'>
+                                <input class='form-check-input' type='radio' name='gridRadios' id='patient-create-male' value='male' checked>
+                                <label class='form-check-label' for='patient-create-male'>
+                                  Male
+                                </label>
+                              </div>
+                              <div class='form-check'>
+                                <input class='form-check-input' type='radio' name='gridRadios' id='patient-create-female' value='female'>
+                                <label class='form-check-label' for='patient-create-female'>
+                                  Female
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                        </fieldset>
+                        <div class='form-group row'>
+                          <label for='patient-create-birthdate' class='col-sm-2 col-form-label'>Birthdate</label>
+                          <div class='col-sm-10'>
+                            <input class='form-control' type='date' name='patient-create-birthdate' required>
+                          </div>
+                        </div>
+                        <button class='btn btn-primary' id='patient-create'>Create Patient</button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id='patient-errors-row' class='row mt-5'>
+            <div class='col'>
+              <div id='patient-errors'></div>
+            </div>
+          </div>
+
+          <div id='patient-loading-row' class='row mt-5'>
+            <div class='col'>
+              <div id='loading' class='spinner'>
+                <div class='bounce1'></div>
+                <div class='bounce2'></div>
+                <div class='bounce3'></div>
+              </div>
+            </div>
+          </div>
+
+          <div id='patients-holder-row' class='row mt-5'>
+            <div class='col'>
+              <div id='patients-holder'>
+                <div class='row'>
+                  <div class='col'>
+                    <h2>Patients</h2>
+                  </div>
+                </div>
+                <div class='row'>
+                  <div class='col'>
+                    <button class='btn btn-danger' id='clear-patients'>Clear Results</button>
+                  </div>
+                </div>
+                <div class='row'>
+                  <div class='col'>
+                    <div id='patients'></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Required JS files to enable this page to embed within an MPage -->
       <script src='https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.26.0/polyfill.min.js'></script>
       <script src='./lib/js/cerner-smart-embeddable-lib-1.0.0.min.js'></script>
