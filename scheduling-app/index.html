@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang='en' hidden>
+  <head>
+    <meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+    <meta http-equiv='X-UA-Compatible' content='IE=edge' />
+    <title>Scheduling App</title>
+
+    <!-- Bootstrap css -->
+    <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css' integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T' crossorigin='anonymous'>
+
+    <!-- Application-level css -->
+    <link rel='stylesheet' type='text/css' href='./src/css/scheduling-app.css'>
+
+    <link rel='stylesheet' type='text/css' href='./lib/css/cerner-smart-embeddable-lib-1.0.0.min.css'>
+  </head>
+  <body>
+    <div class='container'>
+      <div class='row'>
+        <div class='col'>
+          <h1>[GITHUB USERNAME] Scheduling App</h1>
+        </div>
+      </div>
+      
+      <div class='row mt-5'>
+        <div class='col'>
+          <form id='slot-search-form'>
+            <div class='form-group row'>
+              <label for='practitioner' class='col-sm-2 col-form-label'>Practitioner</label>
+              <div class='col-sm-10'>
+                <select class='form-control' id='practitioner' name='schedule.actor' required>
+                  <option value='Practitioner/1672007'>Andrew Robertson</option>
+                  <option value='Practitioner/1418008'>Phil V Brewer</option>
+                  <option value='Practitioner/937933'>Bryce Barney Burns</option>
+                  <option value='Practitioner/937934'>Christine Carly Chambers</option>
+                  <option value='Practitioner/605926'>Kristen Cerner Carter</option>
+                </select>
+              </div>
+            </div>
+
+            <div class='form-group row'>
+              <label for='location' class='col-sm-2 col-form-label'>Location</label>
+              <div class='col-sm-10'>
+                <select class='form-control' id='location' name='-location' required>
+                  <option value='4048128'>Baseline East Medical Center</option>
+                  <option value='4048296'>Family Practice Clinic</option>
+                </select>
+              </div>
+            </div>
+
+            <div class='form-group row'>
+              <label for='slot-type' class='col-sm-2 col-form-label'>Slot Type</label>
+              <div class='col-sm-10'>
+                <select class='form-control' id='slot-type' name='slot-type' required>
+                  <option value='http://snomed.info/sct|394581000'>Community medicine</option>
+                  <option value='https://fhir.cerner.com/0b8a0111-e8e6-4c26-a91c-5069cbc6b1ca/codeSet/14249|21265426'>Same day</option>
+                  <option value='https://fhir.cerner.com/0b8a0111-e8e6-4c26-a91c-5069cbc6b1ca/codeSet/14249|5038365'>Office Visit - New</option>
+                </select>
+              </div>
+            </div>
+
+            <div class='form-group row'>
+              <label for='date-start' class='col-sm-2 col-form-label'>Date (Start)</label>
+              <div class='col-sm-10'>
+                <input class='form-control' type='date' name='date-start' required>
+              </div>
+            </div>
+
+            <div class='form-group row'>
+              <label for='date-end' class='col-sm-2 col-form-label'>Date (End)</label>
+              <div class='col-sm-10'>
+                <input class='form-control' type='date' name='date-end' required>
+              </div>
+            </div>
+
+            <button class='btn btn-primary' id='slot-search'>Search for Slots</button>
+          </form>
+        </div>
+      </div>
+
+      <div id='errors-row' class='row mt-5'>
+        <div class='col'>
+          <div id='errors'></div>
+        </div>
+      </div>
+
+      <div id='loading-row' class='row mt-5'>
+        <div class='col'>
+          <div id='loading' class='spinner'>
+            <div class='bounce1'></div>
+            <div class='bounce2'></div>
+            <div class='bounce3'></div>
+          </div>
+        </div>
+      </div>
+
+      <div id='slots-holder-row' class='row mt-5'>
+        <div class='col'>
+          <div id='slots-holder'>
+            <div class='row'>
+              <div class='col'>
+                <h2>Slots</h2>
+              </div>
+            </div>
+            <div class='row'>
+              <div class='col'>
+                <button class='btn btn-danger' id='clear-slots'>Clear Results</button>
+              </div>
+            </div>
+            <div class='row'>
+              <div class='col'>
+                <div id='slots'></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Required JS files to enable this page to embed within an MPage -->
+      <script src='https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.26.0/polyfill.min.js'></script>
+      <script src='./lib/js/cerner-smart-embeddable-lib-1.0.0.min.js'></script>
+
+      <!-- jQuery, popper, and Bootstrap js -->
+      <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+      <script src='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js' integrity='sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM' crossorigin='anonymous'></script>
+
+      <!-- Application-level javascript-->
+      <script src='./src/js/scheduling-app.js'></script>
+
+      <!-- FHIR Client JS Library -->
+      <script src='./lib/js/fhir-client-v0.1.12.js'></script>
+
+      <!-- Prevent session bleed caused by single threaded embedded browser and sessionStorage API -->
+      <!-- https://github.com/cerner/fhir-client-cerner-additions -->
+      <script src='./lib/js/fhir-client-cerner-additions-1.0.0.js'></script>
+    </div>
+  </body>
+</html>
