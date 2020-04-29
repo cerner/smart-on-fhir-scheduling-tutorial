@@ -23,7 +23,7 @@ After completing this tutorial you will know how to:
 
 # Project Setup
 
-First, you'll want to fork this tutorial from [smart-on-fhir-scheduling-tutorial](https://github.com/MaxPhilips/smart-on-fhir-scheduling-tutorial) to your GitHub account.
+First, you'll want to fork this tutorial from [smart-on-fhir-scheduling-tutorial](https://github.com/cerner/smart-on-fhir-scheduling-tutorial) to your GitHub account.
 
 The `smart-on-fhir-scheduling-tutorial/source/scheduling-app` folder contains the example SMART app which you'll be using throughout this tutorial. Let's take a look at some of the notable files contained within:
 
