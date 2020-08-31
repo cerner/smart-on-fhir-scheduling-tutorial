@@ -374,7 +374,7 @@ function slotHTML(id, type, start, end) {
              "<p class='card-text'>Start: " + prettyStart + '</p>' +
              "<p class='card-text'>End: " + prettyEnd + '</p>' +
              "<a href='javascript:void(0);' class='card-link' onclick='appointmentCreate(\"" +
-               slotReference + "\", \"Patient/4704007\");'>Book</a>" +
+               slotReference + "\", \"Patient/12508016\");'>Book</a>" +
            '</div>' +
          '</div>';
 }
