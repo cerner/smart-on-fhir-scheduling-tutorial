@@ -450,7 +450,7 @@ function renderAppointment(appointmentLocation) {
 
 Now that we've tested searching for Slots, let's use the Slots to book Appointments. Make the changes noted on the sidebar in `index.html` and `scheduling-app.js`.
 
-After making these changes, your app will be able to book Appointments for a common test Patient: Barney R Smart, patient id 4704007. Launch your app and test it out!
+After making these changes, your app will be able to book Appointments for a common test Patient: Kristin Carter, patient id 12508016. Launch your app and test it out!
 
 With many other consumers booking appointments for this patient, it's pretty likely that you will get some failures when you test. When we are searching for Slots, we are not searching by patient so if you attempt to book an Appointment for that patient when they are already unavailable, you will get an error from Cerner's FHIR server. Let's reduce some of these collisions by spreading the load to other patients.
 
@@ -790,7 +790,7 @@ function patientJSON(firstName, middleName, lastName, phone, gender, birthDate) 
     identifier: [
       {
         assigner: {
-          reference: 'Organization/619848'
+          reference: 'Organization/675844'
         }
       }
     ],
