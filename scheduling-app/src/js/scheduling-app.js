@@ -1,3 +1,19 @@
+// Smart client
+let client;
+
+document.addEventListener('DOMContentLoaded', async event => {
+  console.log('DOM fully loaded and parsed');
+
+  // Immediately call the token endpoint and exchange the code for an access token
+  // code expires after 60 seconds
+  try {
+    client = await FHIR.oauth2.ready();
+  } catch (error) {
+    console.error('Ready Error:', error);
+  }
+});
+
+
 $('#slot-search-form').on('submit', function(e) {
   e.preventDefault();
   slotSearch();
@@ -23,36 +39,33 @@ function slotSearch() {
   // Appointment start date and appointment end date need to both be set in query parameter 'start'
   slotParams['start'] = {$ge: form.elements['date-start'].value, $lt: form.elements['date-end'].value};
 
-  FHIR.oauth2.ready(function(smart) {
-    // Query the FHIR server for Slots
-    smart.api.fetchAll({type: 'Slot', query: slotParams}).then(
+  // Query the FHIR server for Slots
+  client.api.fetchAll({type: 'Slot', query: slotParams}).then(slots => {
+    // Display Appointment information if the call succeeded
 
-      // Display Appointment information if the call succeeded
-      function(slots) {
-        // If any Slots matched the criteria, display them
-        if (slots.length) {
-          var slotsHTML = '';
+    // If any Slots matched the criteria, display them
+    if (slots.length) {
+      var slotsHTML = '';
 
-          slots.forEach(function(slot) {
-            slotsHTML = slotsHTML + slotHTML(slot.id, slot.type.text, slot.start, slot.end);
-          });
+      slots.forEach(function(slot) {
+        slotsHTML = slotsHTML + slotHTML(slot.id, slot.type.text, slot.start, slot.end);
+      });
 
-          renderSlots(slotsHTML);
-        }
-        // If no Slots matched the criteria, inform the user
-        else {
-          renderSlots('<p>No Slots found for the selected query parameters.</p>');
-        }
-      },
+      renderSlots(slotsHTML);
+    }
+    // If no Slots matched the criteria, inform the user
+    else {
+      renderSlots('<p>No Slots found for the selected query parameters.</p>');
+    }
+  })
+  .catch(error => {
+    // Display 'Failed to read Slots from FHIR server' if the call failed
+    console.error('Fetch All Slots Error:', error);
 
-      // Display 'Failed to read Slots from FHIR server' if the call failed
-      function() {
-        clearUI();
-        $('#errors').html('<p>Failed to read Slots from FHIR server</p>');
-        $('#errors-row').show();
-      }
-    );
-  });
+    clearUI();
+    $('#errors').html('<p>Failed to read Slots from FHIR server</p>');
+    $('#errors-row').show();
+  })
 }
 
 function slotHTML(id, type, start, end) {
