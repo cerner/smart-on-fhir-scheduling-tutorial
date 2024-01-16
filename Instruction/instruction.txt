@@ -1,0 +1,170 @@
+
+﻿ ```html
+<!-- Trigger a GitHub Pages Deployment -->
+<!DOCTYPE html>
+<html lang='en' hidden>
+
+<head>
+
+  ...
+
+</head>
+
+<body>
+  <div class='container'>
+    <div class='row'>
+      <div class='col'>
+        <h1>[GITHUB USERNAME] Scheduling App</h1>
+      </div>
+    </div>
+  </div>
+</body>
+
+...
+
+
+<!-- Register App -->
+
+
+Request Authorization Code
+<!DOCTYPE html>
+<html lang='en' hidden>
+
+<head>
+
+  ...
+
+</head>
+
+<body>
+
+  ...
+
+  <script>
+    FHIR.oauth2.authorize({
+      'client_id': '[CLIENT ID]',
+      'scope': 'user/Appointment.write user/Patient.read user/Patient.write user/Slot.read launch online_access openid profile'
+    });
+  </script>
+
+  <div class='spinner'>
+    <div class='bounce1'></div>
+    <div class='bounce2'></div>
+    <div class='bounce3'></div>
+  </div>
+</body>
+
+</html>
+
+<!--scheduling app-->
+/scheduling-app/src/js/scheduling-app.js
+
+// Add missing imports
+import FHIR from 'fhirclient';
+import smart from 'fhirclient';
+
+FHIR.oauth2.ready(function(smart) {
+  // Query the FHIR server for Slots
+  smart.api.fetchAll({
+    type: 'Slot',
+    query: slotParams
+  }).then(
+
+    // Display Appointment information if the call succeeded
+    function(slots) {
+
+      ...
+
+    },
+
+    // Display 'Failed to read Slots from FHIR server' if the call failed
+    function() {
+
+      ...
+
+    }
+  );
+});
+
+...
+
+
+/scheduling-app/src/js/scheduling-app.js - onReady
+
+...
+
+FHIR.oauth2.ready(function(smart) {
+  // Query the FHIR server for Slots
+  smart.api.fetchAll({
+    type: 'Slot',
+    query: slotParams
+  }).then(
+
+    // Display Appointment information if the call succeeded
+    function(slots) {
+      // If any Slots matched the criteria, display them
+      if (slots.length) {
+        var slotsHTML = '';
+
+        slots.forEach(function(slot) {
+          slotsHTML = slotsHTML + slotHTML(slot.id, slot.type.text, slot.start, slot.end);
+        });
+
+        renderSlots(slotsHTML);
+      }
+      // If no Slots matched the criteria, inform the user
+      else {
+        renderSlots('<p>No Slots found for the selected query parameters.</p>');
+      }
+    },
+
+    // Display 'Failed to read Slots from FHIR server' if the call failed
+    function() {
+      clearUI();
+      $('#errors').html('<p>Failed to read Slots from FHIR server</p>');
+      $('#errors-row').show();
+    }
+  );
+});
+
+
+<!--Displaying FHIR Resources-->
+/scheduling-app/index.html
+
+...
+
+<div id='slots-holder-row' class='row mt-5'>
+  <div class='col'>
+    <div id='slots-holder'>
+      <div class='row'>
+        <div class='col'>
+          <h2>Slots</h2>
+        </div>
+      </div>
+      <div class='row'>
+        <div class='col'>
+          <button class='btn btn-danger' id='clear-slots'>Clear Results</button>
+        </div>
+      </div>
+      <div class='row'>
+        <div class='col'>
+          <div id='slots'></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+...
+scheduling-app.js - renderSlots
+
+...
+
+function renderSlots(slotsHTML) {
+  clearUI();
+  $('#slots').html(slotsHTML);
+  $('#slots-holder-row').show();
+}
+
+...
+```﻿
